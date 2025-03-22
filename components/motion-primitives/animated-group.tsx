@@ -1,7 +1,15 @@
 "use client";
 import { ReactNode } from "react";
-import { motion, Variants } from "motion/react";
+import {
+  motion,
+  Variants,
+  HTMLMotionProps,
+  SVGMotionProps,
+} from "motion/react";
 import React from "react";
+
+// Définition de type pour JSX
+import type { JSX } from "react";
 
 export type PresetType =
   | "fade"
@@ -15,6 +23,11 @@ export type PresetType =
   | "rotate"
   | "swing";
 
+// Types motion
+type MotionComponentProps = HTMLMotionProps<"div"> & {
+  children?: React.ReactNode;
+};
+
 export type AnimatedGroupProps = {
   children: ReactNode;
   className?: string;
@@ -23,8 +36,8 @@ export type AnimatedGroupProps = {
     item?: Variants;
   };
   preset?: PresetType;
-  as?: keyof JSX.IntrinsicElements | React.ComponentType<any>;
-  asChild?: keyof JSX.IntrinsicElements | React.ComponentType<any>;
+  as?: string;
+  asChild?: string;
 };
 
 const defaultContainerVariants: Variants = {
@@ -115,27 +128,50 @@ function AnimatedGroup({
   const containerVariants = variants?.container || selectedVariants.container;
   const itemVariants = variants?.item || selectedVariants.item;
 
-  // Correction: assurons-nous que as et asChild sont des chaînes de caractères valides
-  const containerTag = typeof as === "string" ? as : "div";
-  const childTag = typeof asChild === "string" ? asChild : "div";
+  // Utiliser directement les composants motion sans motion.create
+  const Container =
+    as === "div"
+      ? motion.div
+      : as === "section"
+      ? motion.section
+      : as === "article"
+      ? motion.article
+      : as === "span"
+      ? motion.span
+      : as === "aside"
+      ? motion.aside
+      : as === "ul"
+      ? motion.ul
+      : as === "ol"
+      ? motion.ol
+      : as === "li"
+      ? motion.li
+      : motion.div;
 
-  const MotionComponent =
-    motion[containerTag as keyof typeof motion] || motion.div;
-  const MotionChild = motion[childTag as keyof typeof motion] || motion.div;
+  const Child =
+    asChild === "div"
+      ? motion.div
+      : asChild === "span"
+      ? motion.span
+      : asChild === "li"
+      ? motion.li
+      : asChild === "p"
+      ? motion.p
+      : motion.div;
 
   return (
-    <MotionComponent
+    <Container
       initial="hidden"
       animate="visible"
       variants={containerVariants}
       className={className}
     >
       {React.Children.map(children, (child, index) => (
-        <MotionChild key={index} variants={itemVariants}>
+        <Child key={index} variants={itemVariants}>
           {child}
-        </MotionChild>
+        </Child>
       ))}
-    </MotionComponent>
+    </Container>
   );
 }
 
