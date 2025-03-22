@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Calendar } from "lucide-react";
 import { TextLoop } from "../../../components/motion-primitives/text-loop";
 import { featuredServices } from "../../data/services";
@@ -8,8 +9,15 @@ import { featuredServices } from "../../data/services";
 export const HeroSection = () => {
   return (
     <section className="relative h-screen">
-      <div className="absolute inset-0 bg-secondary dark:bg-zinc-900">
-        {/* Placeholder for hero image - nous utiliserons une couleur de fond en attendant */}
+      <div className="absolute inset-0">
+        <Image
+          src="/images/IMG_6305.JPG"
+          alt="EnigmSolution - Vue aérienne de propriétés"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
       </div>
       <div className="absolute inset-0 bg-black/30 dark:bg-black/60" />
       <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center text-white">

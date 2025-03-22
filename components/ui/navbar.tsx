@@ -18,9 +18,10 @@ export function Navbar({
   links = [
     { href: "#", label: "Accueil" },
     { href: "#services", label: "Services" },
-    { href: "#avantages", label: "Avantages" },
-    { href: "#tarifs", label: "Tarifs" },
-    { href: "#contact", label: "Contact" },
+    { href: "#regions", label: "Régions" },
+    { href: "#testimonials", label: "Témoignages" },
+    { href: "#pricing", label: "Tarifs" },
+    { href: "#appointment", label: "Rendez-vous" },
   ],
 }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

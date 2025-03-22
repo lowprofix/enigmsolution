@@ -1,9 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, ArrowRight, ArrowLeft, Check } from "lucide-react";
+import {
+  X,
+  ArrowRight,
+  ArrowLeft,
+  Check,
+  Calendar as CalendarIcon,
+} from "lucide-react";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 import { pricingPlans, consultingService } from "../../data/pricing";
 import { featuredServices } from "../../data/services";
+import { Calendar } from "../ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 type Step = "service" | "plan" | "details" | "confirmation";
 
@@ -38,6 +50,9 @@ export const ReservationModal = ({
     date: "",
     message: "",
   });
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    data.date ? new Date(data.date) : undefined
+  );
 
   useEffect(() => {
     // Désactiver le défilement sur le body quand la modal est ouverte
@@ -57,6 +72,15 @@ export const ReservationModal = ({
       setStep("plan");
     }
   }, [initialService]);
+
+  useEffect(() => {
+    if (selectedDate) {
+      setData((prev) => ({
+        ...prev,
+        date: selectedDate.toISOString().split("T")[0],
+      }));
+    }
+  }, [selectedDate]);
 
   const handleServiceSelect = (service: string) => {
     setData((prev) => ({ ...prev, service }));
@@ -90,7 +114,7 @@ export const ReservationModal = ({
 
   const renderStepIndicator = () => {
     return (
-      <div className="flex items-center justify-center space-x-2 mb-8">
+      <div className="flex items-center justify-center space-x-2 mb-4">
         {["service", "plan", "details", "confirmation"].map((s, index) => (
           <div key={s} className="flex items-center">
             <div
@@ -129,45 +153,57 @@ export const ReservationModal = ({
     );
   };
 
+  const getStepTitle = () => {
+    switch (step) {
+      case "service":
+        return "Quel service vous intéresse ?";
+      case "plan":
+        return data.service === consultingService.name
+          ? "Consultation personnalisée"
+          : `Choisissez votre formule pour ${data.service}`;
+      case "details":
+        return "Vos informations de contact";
+      case "confirmation":
+        return "Demande envoyée avec succès !";
+      default:
+        return "";
+    }
+  };
+
   const renderServiceStep = () => {
     return (
-      <div className="space-y-6">
-        <h3 className="text-xl font-bold text-center">
-          Quel service vous intéresse ?
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {featuredServices.map((service) => (
-            <button
-              key={service.title}
-              onClick={() => handleServiceSelect(service.title)}
-              className="p-4 bg-card border border-border rounded-lg hover:border-primary hover:shadow-md transition-all flex items-start text-left"
-            >
-              <div className="bg-primary/10 p-2 rounded-full mr-3">
-                <service.icon className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <h4 className="font-medium">{service.title}</h4>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {service.description}
-                </p>
-              </div>
-            </button>
-          ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {featuredServices.map((service) => (
           <button
-            onClick={() => handleServiceSelect(consultingService.name)}
-            className="p-4 bg-card border border-border rounded-lg hover:border-primary hover:shadow-md transition-all flex items-start text-left"
+            key={service.title}
+            onClick={() => handleServiceSelect(service.title)}
+            className="p-4 bg-card border border-border rounded-lg hover:border-primary hover:shadow-md transition-all flex items-start text-left group"
           >
-            <div className="bg-primary/10 p-2 rounded-full mr-3">
-              <ArrowRight className="h-5 w-5 text-primary" />
+            <div className="bg-primary/10 p-2 rounded-full mr-3 group-hover:bg-primary/20 transition-colors">
+              <service.icon className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h4 className="font-medium">{consultingService.name}</h4>
+              <h4 className="font-medium">{service.title}</h4>
               <p className="text-sm text-muted-foreground mt-1">
-                {consultingService.description}
+                {service.description}
               </p>
             </div>
           </button>
-        </div>
+        ))}
+        <button
+          onClick={() => handleServiceSelect(consultingService.name)}
+          className="p-4 bg-card border border-border rounded-lg hover:border-primary hover:shadow-md transition-all flex items-start text-left group"
+        >
+          <div className="bg-primary/10 p-2 rounded-full mr-3 group-hover:bg-primary/20 transition-colors">
+            <ArrowRight className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h4 className="font-medium">{consultingService.name}</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              {consultingService.description}
+            </p>
+          </div>
+        </button>
       </div>
     );
   };
@@ -175,75 +211,65 @@ export const ReservationModal = ({
   const renderPlanStep = () => {
     if (data.service === consultingService.name) {
       return (
-        <div className="space-y-6">
-          <h3 className="text-xl font-bold text-center">
-            Consultation personnalisée
-          </h3>
-          <div className="bg-card border border-border rounded-lg p-6 max-w-md mx-auto">
-            <h4 className="text-lg font-bold">{consultingService.name}</h4>
-            <div className="mt-2">
-              <span className="text-2xl font-bold">
-                {consultingService.price}
-              </span>
-              <span className="text-muted-foreground text-sm">
-                {consultingService.frequency}
-              </span>
-            </div>
-            <ul className="mt-4 space-y-2">
-              {consultingService.features.map((feature, index) => (
-                <li key={index} className="flex items-start">
-                  <Check className="h-5 w-5 text-primary flex-shrink-0 mr-2" />
-                  <span className="text-sm">{feature}</span>
-                </li>
-              ))}
-            </ul>
-            <button
-              onClick={() => handlePlanSelect(consultingService.id)}
-              className="w-full mt-6 bg-primary text-primary-foreground py-2 rounded-md"
-            >
-              Continuer
-            </button>
+        <div className="bg-card border border-border rounded-lg p-6 max-w-md mx-auto">
+          <h4 className="text-lg font-bold">{consultingService.name}</h4>
+          <div className="mt-2">
+            <span className="text-2xl font-bold">
+              {consultingService.price}
+            </span>
+            <span className="text-muted-foreground text-sm">
+              {consultingService.frequency}
+            </span>
           </div>
+          <ul className="mt-4 space-y-2">
+            {consultingService.features.map((feature, index) => (
+              <li key={index} className="flex items-start">
+                <Check className="h-5 w-5 text-primary flex-shrink-0 mr-2" />
+                <span className="text-sm">{feature}</span>
+              </li>
+            ))}
+          </ul>
+          <button
+            onClick={() => handlePlanSelect(consultingService.id)}
+            className="w-full mt-6 bg-primary text-primary-foreground py-2 rounded-md"
+          >
+            Continuer
+          </button>
         </div>
       );
     }
 
     return (
-      <div className="space-y-6">
-        <h3 className="text-xl font-bold text-center">
-          Choisissez votre formule pour {data.service}
-        </h3>
-        <div className="grid grid-cols-1 gap-4 max-w-md mx-auto">
-          {pricingPlans.map((plan) => (
-            <button
-              key={plan.id}
-              onClick={() => handlePlanSelect(plan.id)}
-              className={`p-4 bg-card border rounded-lg text-left hover:shadow-md transition-all ${
-                plan.popular
-                  ? "border-primary ring-1 ring-primary"
-                  : "border-border hover:border-primary"
-              }`}
-            >
-              <div className="flex justify-between items-center">
-                <h4 className="font-medium">{plan.name}</h4>
-                {plan.popular && (
-                  <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-                    Recommandé
-                  </span>
-                )}
-              </div>
-              <div className="mt-2">
-                <span className="text-2xl font-bold">{plan.price}</span>
-                <span className="text-muted-foreground text-sm">
-                  /{plan.frequency}
+      <div className="grid grid-cols-1 gap-4 max-w-md mx-auto">
+        {pricingPlans.map((plan) => (
+          <button
+            key={plan.id}
+            onClick={() => handlePlanSelect(plan.id)}
+            className={`p-4 bg-card border rounded-lg text-left hover:shadow-md transition-all ${
+              plan.popular
+                ? "border-primary ring-1 ring-primary"
+                : "border-border hover:border-primary"
+            }`}
+          >
+            <div className="flex justify-between items-center">
+              <h4 className="font-medium">{plan.name}</h4>
+              {plan.popular && (
+                <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                  Recommandé
                 </span>
-              </div>
-              <p className="text-sm text-muted-foreground mt-2">
-                {plan.description}
-              </p>
-            </button>
-          ))}
-        </div>
+              )}
+            </div>
+            <div className="mt-2">
+              <span className="text-2xl font-bold">{plan.price}</span>
+              <span className="text-muted-foreground text-sm">
+                /{plan.frequency}
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground mt-2">
+              {plan.description}
+            </p>
+          </button>
+        ))}
       </div>
     );
   };
@@ -251,9 +277,6 @@ export const ReservationModal = ({
   const renderDetailsStep = () => {
     return (
       <form onSubmit={handleSubmit} className="space-y-6">
-        <h3 className="text-xl font-bold text-center">
-          Vos informations de contact
-        </h3>
         <div className="grid grid-cols-1 gap-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium mb-1">
@@ -301,16 +324,33 @@ export const ReservationModal = ({
             <label htmlFor="date" className="block text-sm font-medium mb-1">
               Date de rendez-vous souhaitée
             </label>
-            <input
-              type="date"
-              id="date"
-              name="date"
-              required
-              value={data.date}
-              onChange={handleInputChange}
-              min={new Date().toISOString().split("T")[0]}
-              className="w-full py-2 px-3 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 bg-background"
-            />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !selectedDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {selectedDate ? (
+                    format(selectedDate, "d MMMM yyyy", { locale: fr })
+                  ) : (
+                    <span>Sélectionnez une date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  disabled={(date) => date < new Date()}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
           <div>
             <label htmlFor="message" className="block text-sm font-medium mb-1">
@@ -352,7 +392,6 @@ export const ReservationModal = ({
         <div className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100 h-16 w-16 rounded-full flex items-center justify-center mx-auto">
           <Check className="h-8 w-8" />
         </div>
-        <h3 className="text-xl font-bold">Demande envoyée avec succès !</h3>
         <p className="text-muted-foreground">
           Merci pour votre intérêt. Notre équipe vous contactera dans les plus
           brefs délais pour confirmer votre rendez-vous.
@@ -375,11 +414,9 @@ export const ReservationModal = ({
             </li>
             <li>
               <span className="text-muted-foreground">Date souhaitée :</span>{" "}
-              {new Date(data.date).toLocaleDateString("fr-FR", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              {data.date
+                ? format(new Date(data.date), "d MMMM yyyy", { locale: fr })
+                : "Non spécifiée"}
             </li>
           </ul>
         </div>
@@ -393,6 +430,21 @@ export const ReservationModal = ({
     );
   };
 
+  const renderCurrentStep = () => {
+    switch (step) {
+      case "service":
+        return renderServiceStep();
+      case "plan":
+        return renderPlanStep();
+      case "details":
+        return renderDetailsStep();
+      case "confirmation":
+        return renderConfirmationStep();
+      default:
+        return null;
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -402,20 +454,26 @@ export const ReservationModal = ({
         onClick={onClose}
         aria-hidden="true"
       ></div>
-      <div className="relative bg-background rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-background rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] flex flex-col">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground z-10"
         >
           <X className="h-5 w-5" />
           <span className="sr-only">Fermer</span>
         </button>
-        <div className="p-6 sm:p-8">
+
+        {/* En-tête fixe */}
+        <div className="p-6 pt-4 pb-0 border-b">
           {renderStepIndicator()}
-          {step === "service" && renderServiceStep()}
-          {step === "plan" && renderPlanStep()}
-          {step === "details" && renderDetailsStep()}
-          {step === "confirmation" && renderConfirmationStep()}
+          <h3 className="text-xl font-bold text-center mt-2 mb-4">
+            {getStepTitle()}
+          </h3>
+        </div>
+
+        {/* Contenu défilant */}
+        <div className="p-6 overflow-y-auto flex-grow">
+          {renderCurrentStep()}
         </div>
       </div>
     </div>
