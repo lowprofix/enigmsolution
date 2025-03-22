@@ -1,11 +1,6 @@
 "use client";
 import { ReactNode } from "react";
-import {
-  motion,
-  Variants,
-  HTMLMotionProps,
-  SVGMotionProps,
-} from "motion/react";
+import { motion, Variants, HTMLMotionProps } from "motion/react";
 import React from "react";
 
 // Définition de type pour JSX
