@@ -55,7 +55,7 @@ export const HeroSection = () => {
         </h1>
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl max-w-2xl mb-6 md:mb-8 animate-fade-in-delay">
           De la gestion locative à la mise en valeur, nous prenons soin de votre
-          bien comme s'il était le nôtre.
+          bien comme s&apos;il était le nôtre.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 md:gap-4 animate-fade-in-delay-long">
           <button className="bg-white text-black px-4 sm:px-6 py-2 sm:py-3 rounded-md font-medium hover:bg-opacity-90 transition-all text-sm sm:text-base lg:text-lg">

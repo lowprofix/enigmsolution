@@ -7,7 +7,6 @@ import {
   Building2,
   Briefcase,
   Sparkles,
-  Bed,
   UtensilsCrossed,
   Bath,
   WashingMachine,
@@ -17,7 +16,7 @@ import React from "react";
 export interface Service {
   title: string;
   description: string;
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   href: string;
   category?: "featured" | "particular" | "professional";
 }

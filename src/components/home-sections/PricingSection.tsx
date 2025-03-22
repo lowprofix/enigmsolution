@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { Check } from "lucide-react";
 import { pricingPlans } from "../../data/pricing";
 import { ReservationModal } from "../reservation";

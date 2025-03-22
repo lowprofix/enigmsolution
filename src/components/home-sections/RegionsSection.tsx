@@ -16,7 +16,7 @@ export const RegionsSection = () => {
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
             Nous sommes présents dans les plus belles régions des Antilles,
-            d'Asie en passant par l'Afrique
+            d&apos;Asie en passant par l&apos;Afrique
           </p>
         </div>
 

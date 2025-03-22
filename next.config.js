@@ -12,7 +12,6 @@ const nextConfig = {
     ],
   },
   // Optimisations pour Vercel
-  swcMinify: true,
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
@@ -25,7 +24,9 @@ const nextConfig = {
   experimental: {
     // Optimisations expérimentales pour Next.js 15+
     optimizeCss: true,
-    serverActions: true,
+    serverActions: {
+      bodySizeLimit: "2mb",
+    },
   },
 };
 

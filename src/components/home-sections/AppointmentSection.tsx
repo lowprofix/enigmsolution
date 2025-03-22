@@ -29,8 +29,8 @@ export const AppointmentSection = () => {
                 </h2>
                 <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-8">
                   Nos experts sont à votre disposition pour un appel
-                  personnalisé afin d'optimiser la gestion et la rentabilité de
-                  votre bien immobilier.
+                  personnalisé afin d&apos;optimiser la gestion et la
+                  rentabilité de votre bien immobilier.
                 </p>
                 <ul className="space-y-2 sm:space-y-3 mb-4 sm:mb-8">
                   {consultingService.features

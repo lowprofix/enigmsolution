@@ -34,7 +34,7 @@ export const TestimonialsSection = () => {
                 </div>
               </div>
               <p className="text-sm sm:text-base text-card-foreground">
-                "{testimonial.content}"
+                &quot;{testimonial.content}&quot;
               </p>
             </div>
           ))}
