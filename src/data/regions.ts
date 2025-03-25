@@ -16,12 +16,12 @@ export const regions = [
   },
   {
     name: "Guyane",
-    imageUrl: "/images/IMG_4028.JPG",
+    imageUrl: "/images/guyane.jpg",
     href: "/regions/guyane",
   },
   {
     name: "Bali",
-    imageUrl: "/images/IMG_4034.JPG",
+    imageUrl: "/images/bali.jpg",
     href: "/regions/bali",
   },
 ];
