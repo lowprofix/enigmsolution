@@ -10,5 +10,6 @@
   },
   "github": {
     "silent": true
-  }
+  },
+  "ignoreCommand": "!pnpm dlx @yarnpkg/doctor"
 }
