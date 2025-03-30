@@ -3,8 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar } from "lucide-react";
-import { TextLoop } from "../../../components/motion-primitives/text-loop";
-import { featuredServices } from "../../data/services";
+import { TextLoop } from "@/components/motion-primitives/text-loop";
+import { featuredServices } from "@/data/services";
 
 export const HeroSection = () => {
   return (
@@ -58,15 +58,19 @@ export const HeroSection = () => {
           bien comme s&apos;il était le nôtre.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 md:gap-4 animate-fade-in-delay-long">
-          <button className="bg-white text-black px-4 sm:px-6 py-2 sm:py-3 rounded-md font-medium hover:bg-opacity-90 transition-all text-sm sm:text-base lg:text-lg">
-            <Link href="/services">Découvrir nos services</Link>
-          </button>
-          <button className="bg-transparent border border-white px-4 sm:px-6 py-2 sm:py-3 rounded-md font-medium hover:bg-white/10 transition-all text-sm sm:text-base lg:text-lg flex items-center">
-            <Link href="/appointments" className="flex items-center">
-              <Calendar className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              Prendre rendez-vous
-            </Link>
-          </button>
+          <Link
+            href="/services"
+            className="inline-flex items-center justify-center bg-primary text-white px-4 sm:px-6 py-2 sm:py-3 rounded-md font-medium hover:bg-primary/90 transition-all text-sm sm:text-base lg:text-lg"
+          >
+            Découvrir nos services
+          </Link>
+          <Link
+            href="/appointments"
+            className="inline-flex items-center justify-center bg-transparent border border-white px-4 sm:px-6 py-2 sm:py-3 rounded-md font-medium hover:bg-white/10 transition-all text-sm sm:text-base lg:text-lg"
+          >
+            <Calendar className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+            Prendre rendez-vous
+          </Link>
         </div>
       </div>
     </section>

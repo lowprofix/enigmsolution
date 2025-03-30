@@ -2,12 +2,30 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronRight, Check, Plus } from "lucide-react";
+import {
+  ChevronRight,
+  Check,
+  Plus,
+  FileEdit,
+  Camera,
+  TrendingUp,
+  Search,
+  MessageCircle,
+  Target,
+  BarChart,
+} from "lucide-react";
 import {
   allServices,
   featuredServices,
   particularServices,
   professionalServices,
+  creationAnnonceServices,
+  optimisationVisuelleServices,
+  tarificationStrategieServices,
+  marketingVisibiliteServices,
+  communicationClientServices,
+  brandingDifferenciationServices,
+  reportingSuiviServices,
 } from "../../data/services";
 import { ReservationModal } from "../reservation";
 import { Badge } from "../ui/badge";
@@ -17,12 +35,34 @@ export const ServicesSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [userType, setUserType] = useState<
-    "particular" | "professional" | null
+    | "particular"
+    | "professional"
+    | "creation-annonce"
+    | "optimisation-visuelle"
+    | "tarification-strategie"
+    | "marketing-visibilite"
+    | "communication-client"
+    | "branding-differenciation"
+    | "reporting-suivi"
+    | null
   >(null);
   const [selectedServiceDetails, setSelectedServiceDetails] = useState<
     (typeof allServices)[0] | null
   >(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+
+  // Tableau associatif des services par type
+  const servicesByType = {
+    particular: particularServices,
+    professional: professionalServices,
+    "creation-annonce": creationAnnonceServices,
+    "optimisation-visuelle": optimisationVisuelleServices,
+    "tarification-strategie": tarificationStrategieServices,
+    "marketing-visibilite": marketingVisibiliteServices,
+    "communication-client": communicationClientServices,
+    "branding-differenciation": brandingDifferenciationServices,
+    "reporting-suivi": reportingSuiviServices,
+  };
 
   const openModal = (serviceTitle: string) => {
     setSelectedService(serviceTitle);
@@ -47,11 +87,23 @@ export const ServicesSection = () => {
   };
 
   // Filtrer les services en fonction du type d'utilisateur sélectionné
-  const filteredServices = userType
-    ? userType === "particular"
-      ? particularServices
-      : professionalServices
-    : [];
+  const filteredServices = userType ? servicesByType[userType] || [] : [];
+
+  // Obtenir un nom d'affichage lisible pour chaque type de service
+  const getServiceTypeName = (type: string) => {
+    const typeNames = {
+      particular: "Particuliers",
+      professional: "Professionnels",
+      "creation-annonce": "Création d'annonce",
+      "optimisation-visuelle": "Optimisation visuelle",
+      "tarification-strategie": "Tarification & stratégie",
+      "marketing-visibilite": "Marketing & visibilité",
+      "communication-client": "Communication client",
+      "branding-differenciation": "Branding & différenciation",
+      "reporting-suivi": "Reporting & suivi",
+    };
+    return typeNames[type as keyof typeof typeNames] || type;
+  };
 
   return (
     <>
@@ -68,33 +120,131 @@ export const ServicesSection = () => {
 
           {/* Sélection du type d'utilisateur */}
           {!userType ? (
-            <div className="max-w-3xl mx-auto p-8 bg-card rounded-lg shadow-md">
+            <div className="max-w-6xl mx-auto">
               <h3 className="text-xl font-semibold mb-6 text-center">
-                Vous êtes...
+                Catégories de Services
               </h3>
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <button
                   onClick={() => setUserType("particular")}
                   className="flex flex-col items-center p-6 border rounded-lg hover:bg-accent transition-colors"
                 >
-                  <div className="w-16 h-16 mb-4 bg-primary/10 rounded-full flex items-center justify-center">
-                    <ChevronRight className="h-8 w-8 text-primary" />
+                  <div className="w-12 h-12 mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                    <ChevronRight className="h-6 w-6 text-primary" />
                   </div>
-                  <span className="text-lg font-medium">Un particulier</span>
-                  <span className="text-sm text-muted-foreground mt-2 text-center">
-                    À la recherche de services pour votre séjour
+                  <span className="text-lg font-medium">Pour particuliers</span>
+                  <span className="text-sm text-muted-foreground mt-1 text-center">
+                    Services pour votre séjour
                   </span>
                 </button>
                 <button
                   onClick={() => setUserType("professional")}
                   className="flex flex-col items-center p-6 border rounded-lg hover:bg-accent transition-colors"
                 >
-                  <div className="w-16 h-16 mb-4 bg-primary/10 rounded-full flex items-center justify-center">
-                    <ChevronRight className="h-8 w-8 text-primary" />
+                  <div className="w-12 h-12 mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                    <ChevronRight className="h-6 w-6 text-primary" />
                   </div>
-                  <span className="text-lg font-medium">Un professionnel</span>
-                  <span className="text-sm text-muted-foreground mt-2 text-center">
-                    À la recherche de services pour vos biens
+                  <span className="text-lg font-medium">
+                    Pour professionnels
+                  </span>
+                  <span className="text-sm text-muted-foreground mt-1 text-center">
+                    Services pour vos biens
+                  </span>
+                </button>
+                <button
+                  onClick={() => setUserType("creation-annonce")}
+                  className="flex flex-col items-center p-6 border rounded-lg hover:bg-accent transition-colors"
+                >
+                  <div className="w-12 h-12 mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                    <FileEdit className="h-6 w-6 text-primary" />
+                  </div>
+                  <span className="text-lg font-medium">
+                    Création d'annonce
+                  </span>
+                  <span className="text-sm text-muted-foreground mt-1 text-center">
+                    Rédaction, traduction, mise en ligne
+                  </span>
+                </button>
+                <button
+                  onClick={() => setUserType("optimisation-visuelle")}
+                  className="flex flex-col items-center p-6 border rounded-lg hover:bg-accent transition-colors"
+                >
+                  <div className="w-12 h-12 mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                    <Camera className="h-6 w-6 text-primary" />
+                  </div>
+                  <span className="text-lg font-medium">
+                    Optimisation visuelle
+                  </span>
+                  <span className="text-sm text-muted-foreground mt-1 text-center">
+                    Photos, vidéos, plans 2D
+                  </span>
+                </button>
+                <button
+                  onClick={() => setUserType("tarification-strategie")}
+                  className="flex flex-col items-center p-6 border rounded-lg hover:bg-accent transition-colors"
+                >
+                  <div className="w-12 h-12 mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                    <TrendingUp className="h-6 w-6 text-primary" />
+                  </div>
+                  <span className="text-lg font-medium">
+                    Tarification & stratégie
+                  </span>
+                  <span className="text-sm text-muted-foreground mt-1 text-center">
+                    Pricing dynamique, calendrier tarifaire
+                  </span>
+                </button>
+                <button
+                  onClick={() => setUserType("marketing-visibilite")}
+                  className="flex flex-col items-center p-6 border rounded-lg hover:bg-accent transition-colors"
+                >
+                  <div className="w-12 h-12 mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                    <Search className="h-6 w-6 text-primary" />
+                  </div>
+                  <span className="text-lg font-medium">
+                    Marketing & visibilité
+                  </span>
+                  <span className="text-sm text-muted-foreground mt-1 text-center">
+                    SEO, multi-plateformes, réseaux sociaux
+                  </span>
+                </button>
+                <button
+                  onClick={() => setUserType("communication-client")}
+                  className="flex flex-col items-center p-6 border rounded-lg hover:bg-accent transition-colors"
+                >
+                  <div className="w-12 h-12 mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                    <MessageCircle className="h-6 w-6 text-primary" />
+                  </div>
+                  <span className="text-lg font-medium">
+                    Communication client
+                  </span>
+                  <span className="text-sm text-muted-foreground mt-1 text-center">
+                    Messages auto, livret d'accueil
+                  </span>
+                </button>
+                <button
+                  onClick={() => setUserType("branding-differenciation")}
+                  className="flex flex-col items-center p-6 border rounded-lg hover:bg-accent transition-colors"
+                >
+                  <div className="w-12 h-12 mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                    <Target className="h-6 w-6 text-primary" />
+                  </div>
+                  <span className="text-lg font-medium">
+                    Branding & différenciation
+                  </span>
+                  <span className="text-sm text-muted-foreground mt-1 text-center">
+                    Nom, logo, positionnement
+                  </span>
+                </button>
+                <button
+                  onClick={() => setUserType("reporting-suivi")}
+                  className="flex flex-col items-center p-6 border rounded-lg hover:bg-accent transition-colors"
+                >
+                  <div className="w-12 h-12 mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                    <BarChart className="h-6 w-6 text-primary" />
+                  </div>
+                  <span className="text-lg font-medium">Reporting & suivi</span>
+                  <span className="text-sm text-muted-foreground mt-1 text-center">
+                    Rapport mensuel, suivi des avis
                   </span>
                 </button>
               </div>
@@ -112,13 +262,10 @@ export const ServicesSection = () => {
                   className="text-primary hover:underline flex items-center"
                 >
                   <ChevronRight className="h-4 w-4 transform rotate-180 mr-1" />
-                  Revenir à la sélection
+                  Revenir aux catégories
                 </button>
                 <h3 className="text-xl font-semibold">
-                  Services pour{" "}
-                  {userType === "particular"
-                    ? "particuliers"
-                    : "professionnels"}
+                  Services : {getServiceTypeName(userType)}
                 </h3>
                 <div className="w-24"></div> {/* Espace pour équilibrer */}
               </div>
@@ -188,6 +335,46 @@ export const ServicesSection = () => {
                       <p className="text-muted-foreground mb-4">
                         {selectedServiceDetails.description}
                       </p>
+
+                      {/* Ajout des caractéristiques/bénéfices pour les nouveaux types de services */}
+                      {selectedServiceDetails.features && (
+                        <div className="mt-4">
+                          <h4 className="font-medium mb-2">Caractéristiques</h4>
+                          <ul className="space-y-2">
+                            {selectedServiceDetails.features.map(
+                              (feature, index) => (
+                                <li
+                                  key={index}
+                                  className="flex items-start gap-2"
+                                >
+                                  <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2" />
+                                  <span>{feature}</span>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      )}
+
+                      {selectedServiceDetails.benefits && (
+                        <div className="mt-4">
+                          <h4 className="font-medium mb-2">Bénéfices</h4>
+                          <ul className="space-y-2">
+                            {selectedServiceDetails.benefits.map(
+                              (benefit, index) => (
+                                <li
+                                  key={index}
+                                  className="flex items-start gap-2"
+                                >
+                                  <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2" />
+                                  <span>{benefit}</span>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      )}
+
                       <div className="flex flex-wrap gap-2 mt-6">
                         <button
                           onClick={() =>
@@ -269,31 +456,31 @@ export const ServicesSection = () => {
 
           {/* Services vedettes en bas de page */}
           <div className="mt-16">
-            <h3 className="text-xl font-semibold text-center mb-6">
-              Services vedettes
+            <h3 className="text-xl font-semibold mb-6 text-center">
+              Services populaires
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {featuredServices.map((service, index) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {featuredServices.map((service) => (
                 <div
-                  key={index}
-                  className="bg-card rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+                  key={service.title}
+                  className="bg-card p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <div className="p-5">
-                    <div className="bg-primary/10 w-10 h-10 rounded-full flex items-center justify-center mb-3">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-primary/10 w-10 h-10 rounded-full flex items-center justify-center mr-3">
                       <service.icon className="h-5 w-5 text-primary" />
                     </div>
-                    <h3 className="text-lg font-bold mb-2">{service.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      {service.description}
-                    </p>
-                    <Link
-                      href={service.href}
-                      className="text-primary text-sm font-medium flex items-center group"
-                    >
-                      En savoir plus
-                      <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </Link>
+                    <h4 className="font-medium">{service.title}</h4>
                   </div>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {service.description}
+                  </p>
+                  <Link
+                    href={service.href}
+                    className="text-sm text-primary font-medium flex items-center hover:underline"
+                  >
+                    En savoir plus
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </Link>
                 </div>
               ))}
             </div>
@@ -301,11 +488,13 @@ export const ServicesSection = () => {
         </div>
       </section>
 
-      <ReservationModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        initialService={selectedService || undefined}
-      />
+      {isModalOpen && selectedService && (
+        <ReservationModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          initialService={selectedService}
+        />
+      )}
     </>
   );
 };

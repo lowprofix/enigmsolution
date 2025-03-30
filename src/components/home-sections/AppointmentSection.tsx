@@ -19,7 +19,7 @@ export const AppointmentSection = () => {
 
   return (
     <>
-      <section className="py-12 sm:py-16 md:py-20 bg-muted">
+      <section id="appointment" className="py-12 sm:py-16 md:py-20 bg-muted">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto bg-card rounded-xl shadow-lg overflow-hidden">
             <div className="md:flex">

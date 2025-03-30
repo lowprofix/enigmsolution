@@ -3,12 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin } from "lucide-react";
-import { regions } from "../../data/regions";
-import { InfiniteSlider } from "../../../components/motion-primitives/infinite-slider";
+import { regions } from "@/data/regions";
+import { InfiniteSlider } from "@/components/motion-primitives/infinite-slider";
 
 export const RegionsSection = () => {
   return (
-    <section className="py-12 sm:py-16 md:py-20 bg-muted">
+    <section id="regions" className="py-12 sm:py-16 md:py-20 bg-muted">
       <div className="container mx-auto px-4">
         <div className="text-center mb-8 sm:mb-12 md:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-4">

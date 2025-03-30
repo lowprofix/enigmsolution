@@ -19,7 +19,10 @@ export const CtaSection = () => {
 
   return (
     <>
-      <section className="py-12 sm:py-16 md:py-20 bg-primary text-primary-foreground">
+      <section
+        id="cta"
+        className="py-12 sm:py-16 md:py-20 bg-primary text-primary-foreground"
+      >
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-6">
             Prêt à valoriser votre bien immobilier?

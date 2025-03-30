@@ -4,7 +4,10 @@ import { testimonials } from "../../data/testimonials";
 
 export const TestimonialsSection = () => {
   return (
-    <section className="py-12 sm:py-16 md:py-20 bg-background">
+    <section
+      id="testimonials"
+      className="py-12 sm:py-16 md:py-20 bg-background"
+    >
       <div className="container mx-auto px-4">
         <div className="text-center mb-8 sm:mb-12 md:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-4">
