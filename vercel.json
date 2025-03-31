@@ -1,7 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "pnpm build --no-lint",
-  "installCommand": "pnpm install",
   "framework": "nextjs",
   "regions": ["cdg1"],
   "images": {
@@ -10,6 +8,5 @@
   },
   "github": {
     "silent": true
-  },
-  "ignoreCommand": "!pnpm dlx @yarnpkg/doctor"
+  }
 }
