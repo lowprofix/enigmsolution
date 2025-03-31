@@ -1,13 +1,13 @@
-'use client';
-import { cn } from '@/lib/utils';
+"use client";
+import { cn } from "@/lib/utils";
 import {
   motion,
   AnimatePresence,
   Transition,
   Variants,
   AnimatePresenceProps,
-} from 'motion/react';
-import { useState, useEffect, Children } from 'react';
+} from "motion/react";
+import { useState, useEffect, Children, useMemo } from "react";
 
 export type TextLoopProps = {
   children: React.ReactNode[];
@@ -17,7 +17,9 @@ export type TextLoopProps = {
   variants?: Variants;
   onIndexChange?: (index: number) => void;
   trigger?: boolean;
-  mode?: AnimatePresenceProps['mode'];
+  mode?: AnimatePresenceProps["mode"];
+  maxItems?: number;
+  randomize?: boolean;
 };
 
 export function TextLoop({
@@ -28,10 +30,23 @@ export function TextLoop({
   variants,
   onIndexChange,
   trigger = true,
-  mode = 'popLayout',
+  mode = "popLayout",
+  maxItems,
+  randomize = false,
 }: TextLoopProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const items = Children.toArray(children);
+  const allItems = Children.toArray(children);
+
+  const items = useMemo(() => {
+    if (!maxItems || allItems.length <= maxItems) return allItems;
+
+    if (randomize) {
+      const shuffled = [...allItems].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, maxItems);
+    }
+
+    return allItems.slice(0, maxItems);
+  }, [allItems, maxItems, randomize]);
 
   useEffect(() => {
     if (!trigger) return;
@@ -54,13 +69,13 @@ export function TextLoop({
   };
 
   return (
-    <div className={cn('relative inline-block whitespace-nowrap', className)}>
+    <div className={cn("relative inline-block whitespace-nowrap", className)}>
       <AnimatePresence mode={mode} initial={false}>
         <motion.div
           key={currentIndex}
-          initial='initial'
-          animate='animate'
-          exit='exit'
+          initial="initial"
+          animate="animate"
+          exit="exit"
           transition={transition}
           variants={variants || motionVariants}
         >

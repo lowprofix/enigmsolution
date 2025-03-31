@@ -4,9 +4,41 @@ import Link from "next/link";
 import Image from "next/image";
 import { Calendar } from "lucide-react";
 import { TextLoop } from "@/components/motion-primitives/text-loop";
-import { featuredServices } from "@/data/services";
+import { allServices } from "@/data/services";
+import { useMemo } from "react";
+
+const getShortTitle = (title: string): string => {
+  // Mapping spécifique pour certains services courants
+  const titleMapping: Record<string, string> = {
+    "Mise en valeur immobilière": "Mise en valeur",
+    "Photographie & Vidéo": "Photo & Vidéo",
+    "Optimisation BnB": "Opt. BnB",
+    "Conciergerie incluse": "Conciergerie",
+    "Apéro dinatoire d'arrivée": "Apéro d'arrivée",
+    "Conciergerie au forfait": "Conciergerie",
+    "Conciergerie au pourcentage": "Conciergerie %",
+    "Ménage et entretien": "Ménage",
+    "Rédaction optimisée d'annonce": "Rédaction",
+    "Traduction d'annonce": "Traduction",
+    "Mise en ligne et paramétrage": "Paramétrage",
+    "Analyse de la concurrence": "Analyse",
+    "Shooting photo professionnel": "Photo Pro",
+    "Création de vidéo": "Vidéo",
+  };
+
+  // Utiliser le mapping ou créer un titre court basé sur la longueur
+  return (
+    titleMapping[title] || (title.length > 15 ? title.split(" ")[0] : title)
+  );
+};
 
 export const HeroSection = () => {
+  // Utiliser useMemo pour stabiliser l'ordre des services
+  const services = useMemo(() => {
+    // Créer une copie triée des services pour garantir un ordre constant
+    return [...allServices].sort((a, b) => a.title.localeCompare(b.title));
+  }, []);
+
   return (
     <section className="relative h-screen">
       <div className="absolute inset-0">
@@ -34,23 +66,16 @@ export const HeroSection = () => {
             className="text-primary text-3xl sm:text-4xl md:text-5xl lg:text-7xl"
             interval={3.5}
             transition={{ duration: 0.5, ease: "easeOut" }}
+            maxItems={15}
           >
-            {[
-              ...featuredServices.map((service) => (
-                <span key={service.title} className="font-bold">
-                  <span className="sm:hidden">
-                    {service.title === "Mise en valeur immobilière"
-                      ? "Mise en valeur"
-                      : service.title === "Photographie & Vidéo"
-                      ? "Photo & Vidéo"
-                      : service.title === "Optimisation BnB"
-                      ? "Optimisation BnB"
-                      : service.title}
-                  </span>
-                  <span className="hidden sm:inline">{service.title}</span>
+            {services.map((service) => (
+              <span key={service.title} className="font-bold">
+                <span className="sm:hidden">
+                  {getShortTitle(service.title)}
                 </span>
-              )),
-            ]}
+                <span className="hidden sm:inline">{service.title}</span>
+              </span>
+            ))}
           </TextLoop>
         </h1>
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl max-w-2xl mb-6 md:mb-8 animate-fade-in-delay">
